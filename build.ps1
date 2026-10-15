@@ -7,7 +7,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-$root    = "D:\dsh\music-player"
+$root    = $PSScriptRoot
 $srcDir  = Join-Path $root "src"
 $toolDir = Join-Path $root "tools"
 $outDir  = Join-Path $root "build"

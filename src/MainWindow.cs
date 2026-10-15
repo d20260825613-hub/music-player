@@ -899,12 +899,16 @@ namespace MusicPlayer
         {
             if (!engine.IsOpen) return;
             int dur = engine.DurationMs;
+            // 长度未知时不要发 seek。MCI 对没有有效长度的文件会回错误码，
+            // 而错误码在 AudioEngine 里一律变成异常抛回 UI 线程 —— 键盘快进
+            // 一下就能把整个播放器干掉。
+            if (dur <= 0) return;
             int pos = engine.PositionMs + deltaMs;
             if (pos < 0) pos = 0;
-            if (dur > 0 && pos > dur - 500) pos = dur - 500;
+            if (pos > dur - 500) pos = dur - 500;
             if (pos < 0) pos = 0;
             engine.Seek(pos);
-            seekBar.SetValue(dur > 0 ? (double)pos / dur : 0);
+            seekBar.SetValue((double)pos / dur);
             curTime.Text = Fmt.Time(pos);
         }
 
